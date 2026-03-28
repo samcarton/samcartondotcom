@@ -1,33 +1,357 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-<title>SamCarton.com</title>
-    <link rel="stylesheet" href="css/sc-prefix.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2&family=Shrikhand&family=Ubuntu&display=swap"
-        rel="stylesheet">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAM CARTON</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #0000cc;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Share Tech Mono', 'Courier New', monospace;
+      padding: 20px;
+    }
+
+    /* Scanlines overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.05) 2px,
+        rgba(0, 0, 0, 0.05) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 780px;
+      background: #0000cc;
+      border: 2px solid #aaaacc;
+      box-shadow: 6px 6px 0px #00008b;
+      animation: flicker 8s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 95%, 100% { opacity: 1; }
+      96% { opacity: 0.92; }
+      97% { opacity: 1; }
+      98% { opacity: 0.95; }
+    }
+
+    /* Title bar */
+    .title-bar {
+      background: #aaaacc;
+      color: #0000cc;
+      padding: 6px 12px;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-transform: uppercase;
+    }
+
+    .title-bar-gear {
+      cursor: default;
+      font-size: 16px;
+    }
+
+    /* Main content */
+    .content {
+      padding: 40px 36px 30px;
+      position: relative;
+    }
+
+    /* Corner brackets */
+    .bracket-box {
+      position: relative;
+      padding: 24px 20px;
+      margin-bottom: 30px;
+    }
+
+    .bracket {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-color: #aaaacc;
+      border-style: solid;
+    }
+
+    .bracket::after {
+      content: '';
+      position: absolute;
+      width: 23px;
+      height: 23px;
+      border-color: #aaaacc;
+      border-style: solid;
+    }
+
+    .bracket-tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
+    .bracket-tl::after { top: 3px; left: 3px; border-width: 2px 0 0 2px; }
+
+    .bracket-tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
+    .bracket-tr::after { top: 3px; right: 3px; border-width: 2px 2px 0 0; }
+
+    .name {
+      font-family: 'VT323', monospace;
+      font-size: clamp(52px, 10vw, 80px);
+      color: #ffffff;
+      letter-spacing: 0.05em;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #ffff00;
+      font-size: 14px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .subtitle::after {
+      content: '_';
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Menu rows */
+    .menu {
+      margin: 10px 0 16px;
+      padding: 0 20px;
+    }
+
+    .menu-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(170, 170, 204, 0.2);
+      color: #aaaacc;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .menu-row:first-child {
+      border-top: 1px solid rgba(170, 170, 204, 0.2);
+    }
+
+    a.menu-row {
+      cursor: pointer;
+      transition: color 0.1s;
+    }
+
+    a.menu-row:hover {
+      color: #ffffff;
+    }
+
+    a.menu-row:hover .menu-value {
+      color: #ffff55;
+    }
+
+    .menu-label {
+      color: #ffffff;
+    }
+
+    .menu-value {
+      color: #ffff00;
+      white-space: nowrap;
+      margin-left: 20px;
+    }
+
+    .menu-row.inactive .menu-value {
+      color: #6666aa;
+    }
+
+    /* Watermark */
+    .watermark {
+      font-family: 'VT323', monospace;
+      font-size: clamp(40px, 9vw, 72px);
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(170, 170, 204, 0.5);
+      letter-spacing: 0.08em;
+      user-select: none;
+      pointer-events: none;
+      margin-bottom: 10px;
+      padding-left: 20px;
+    }
+
+    /* Bottom bracket line */
+    .bracket-bottom {
+      height: 28px;
+      position: relative;
+      margin: 0 0 10px;
+    }
+
+    .bracket-bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+    .bracket-bl::after { bottom: 3px; left: 3px; border-width: 0 0 2px 2px; }
+
+    .bracket-br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+    .bracket-br::after { bottom: 3px; right: 3px; border-width: 0 2px 2px 0; }
+
+    /* Footer bar */
+    .footer-bar {
+      background: #aaaacc;
+      color: #0000cc;
+      padding: 6px 0;
+      display: flex;
+      justify-content: space-around;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .footer-link {
+      color: #0000cc;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 8px;
+      transition: background 0.1s, color 0.1s;
+    }
+
+    .footer-link:hover {
+      background: #0000cc;
+      color: #aaaacc;
+    }
+
+    .key {
+      background: #0000cc;
+      color: #aaaacc;
+      font-size: 11px;
+      padding: 1px 4px;
+      border-radius: 2px;
+      font-weight: bold;
+    }
+
+    .footer-link:hover .key {
+      background: #aaaacc;
+      color: #0000cc;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      .content {
+        padding: 20px 16px 16px;
+      }
+
+      .menu {
+        padding: 0 20px;
+      }
+
+      .watermark {
+        padding-left: 20px;
+      }
+
+      .bracket-box {
+        padding: 16px 20px;
+      }
+    }
+  </style>
 </head>
-
 <body>
-    <div class="container">
-        <div class="main">
-            <div class="header glitch" data-text="Sam Carton">
-                Sam Carton
-            </div>
-            <div class="subtitle">
-                Full stack developer.
-            </div>
-            <div class="links">
-                <a href="http://linkedin.com/in/sjcarton">LinkedIn</a> - <a
-                    href="http://github.com/samcarton">GitHub</a>
-            </div>
-        </div>
+  <div class="card">
+    <div class="title-bar">
+      <span>SCART_SYS SETUP UTILITY &mdash; COPYRIGHT (C) 198X</span>
+      <span class="title-bar-gear">&#9881;</span>
     </div>
-</body>
 
+    <div class="content">
+      <div class="bracket-box">
+        <span class="bracket bracket-tl"></span>
+        <span class="bracket bracket-tr"></span>
+        <div class="name">SAM CARTON</div>
+        <div class="subtitle">&gt;&gt; FULL STACK DEVELOPER</div>
+      </div>
+
+      <div class="menu">
+        <div class="menu-row">
+          <span class="menu-label">FRONTEND</span>
+          <span class="menu-value">[ NEXT.JS // REACT ]</span>
+        </div>
+        <div class="menu-row">
+          <span class="menu-label">BACKEND</span>
+          <span class="menu-value">[ .NET // NODE ]</span>
+        </div>
+        <div class="menu-row">
+          <span class="menu-label">INFRA</span>
+          <span class="menu-value">[ K8S // GCP // AZURE ]</span>
+        </div>
+        <div class="menu-row">
+          <span class="menu-label">DATA</span>
+          <span class="menu-value">[ POSTGRESQL // REDIS ]</span>
+        </div>
+        <div class="menu-row">
+          <span class="menu-label">DEVOPS</span>
+          <span class="menu-value">[ CI/CD // DOCKER ]</span>
+        </div>
+        <div class="menu-row inactive">
+          <span class="menu-label">MORE</span>
+          <span class="menu-value">[ EXT_AVAILABLE ]</span>
+        </div>
+      </div>
+
+      <div class="watermark">SCART_SYS</div>
+
+      <div class="bracket-bottom">
+        <span class="bracket bracket-bl"></span>
+        <span class="bracket bracket-br"></span>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <a class="footer-link" id="link-github" href="https://github.com/samcarton" target="_blank" rel="noopener">
+        <span class="key">G</span> GITHUB &gt;
+      </a>
+      <a class="footer-link" id="link-linkedin" href="https://linkedin.com/in/sjcarton" target="_blank" rel="noopener">
+        <span class="key">L</span> LINKEDIN &gt;
+      </a>
+      <a class="footer-link" id="link-contact" href="mailto:contact@samcarton.com">
+        <span class="key">C</span> CONTACT @
+      </a>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('keydown', function(e) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      switch (e.key.toLowerCase()) {
+        case 'g': document.getElementById('link-github').click(); break;
+        case 'l': document.getElementById('link-linkedin').click(); break;
+        case 'c': document.getElementById('link-contact').click(); break;
+      }
+    });
+  </script>
+</body>
 </html>
